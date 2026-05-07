@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orders | Restaurant Pro</title>
+    <title>Orders | Spicy Garden</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -273,7 +273,7 @@
     <nav>
         <div class="brand">
             <ion-icon name="restaurant"></ion-icon>
-            Restaurant Pro
+            Spicy Garden
         </div>
         <div class="nav-actions">
             {% if request.user.is_superuser %}
@@ -335,7 +335,7 @@
                                 {{ order.status }}
                             </span>
                             
-                            {% if request.user.is_staff or request.user.is_superuser %}
+                            {% if request.user.is_staff and not request.user.is_superuser %}
                             <div style="margin-top: 0.5rem; text-align: center;">
                                 <form action="{% url 'update_order_status' order.id %}" method="POST" style="display:inline;">
                                     {% csrf_token %}

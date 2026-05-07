@@ -91,7 +91,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login redirect
-LOGIN_URL = '/'
+LOGIN_URL = '/login/'
 
 # Email Backend (for testing password reset)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

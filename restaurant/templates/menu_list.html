@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu | Restaurant Pro</title>
+    <title>Menu | Spicy Garden</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -326,7 +326,7 @@
     <nav>
         <div class="brand">
             <ion-icon name="restaurant"></ion-icon>
-            Restaurant Pro
+            Spicy Garden
         </div>
         <div class="nav-actions">
             {% if request.user.is_superuser %}
@@ -349,7 +349,7 @@
                 <h2>Our Menu</h2>
                 <p>Select your favorite dishes and place an order.</p>
             </div>
-            {% if request.user.is_staff or request.user.is_superuser %}
+            {% if request.user.is_superuser %}
             <div>
                 <a href="/add/" class="action-btn"><ion-icon name="add-circle-outline"></ion-icon> Add New Item</a>
             </div>
@@ -369,14 +369,14 @@
                             <th width="15%">Category</th>
                             <th width="10%">Price</th>
                             <th width="35%">Description</th>
-                            {% if request.user.is_staff or request.user.is_superuser %}
+                            {% if request.user.is_superuser %}
                             <th width="15%">Admin Actions</th>
                             {% endif %}
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in items %}
-                        {% if item.is_available or request.user.is_staff or request.user.is_superuser %}
+                        {% if item.is_available or request.user.is_superuser %}
                         <tr>
                             {% if not request.user.is_superuser and not request.user.is_staff %}
                             <td>
@@ -395,7 +395,7 @@
                             <td class="item-price">${{ item.price|floatformat:2 }}</td>
                             <td style="color: var(--text-muted);">{{ item.description }}</td>
                             
-                            {% if request.user.is_staff or request.user.is_superuser %}
+                            {% if request.user.is_superuser %}
                             <td class="action-links">
                                 <a href="/update/{{ item.id }}">Edit</a>
                                 {% if request.user.is_superuser %}

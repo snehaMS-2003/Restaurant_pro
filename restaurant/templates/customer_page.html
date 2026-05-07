@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Dashboard | Restaurant Pro</title>
+    <title>Customer Dashboard | Spicy Garden</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -30,7 +31,7 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: 
+            background-image:
                 radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
             background-attachment: fixed;
@@ -178,8 +179,13 @@
             transform: scale(1.1);
         }
 
-        .card-menu ion-icon { color: #f59e0b; }
-        .card-orders ion-icon { color: #10b981; }
+        .card-menu ion-icon {
+            color: #f59e0b;
+        }
+
+        .card-orders ion-icon {
+            color: #10b981;
+        }
 
         .action-card h3 {
             font-size: 1.4rem;
@@ -216,12 +222,50 @@
             animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes fadeOut { to { opacity: 0; } }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     {% if messages %}
@@ -245,7 +289,7 @@
     <nav>
         <div class="brand">
             <ion-icon name="restaurant"></ion-icon>
-            Restaurant Pro
+            Spicy Garden
         </div>
         <div>
             <a href="/logout/" class="logout-btn">
@@ -277,4 +321,5 @@
     </main>
 
 </body>
+
 </html>

@@ -6,6 +6,10 @@ from django.contrib import messages
 from .models import Menu, Order
 from .forms import MenuForm
 
+# HOME / LANDING PAGE
+def home(request):
+    return render(request, 'home.html')
+
 # LOGIN
 def user_login(request):
     if request.method == 'POST':
@@ -88,7 +92,7 @@ def menu_list(request):
 
 @login_required
 def add_menu(request):
-    if not (request.user.is_staff or request.user.is_superuser):
+    if not request.user.is_superuser:
         return redirect('menu_list')
         
     if request.method == 'POST':
@@ -103,7 +107,7 @@ def add_menu(request):
 
 @login_required
 def update_menu(request, pk):
-    if not (request.user.is_staff or request.user.is_superuser):
+    if not request.user.is_superuser:
         return redirect('menu_list')
         
     item = get_object_or_404(Menu, id=pk)
@@ -177,8 +181,8 @@ def update_order_status(request, pk):
     if request.method != 'POST':
         return redirect('order_list')
         
-    if not (request.user.is_staff or request.user.is_superuser):
-        messages.error(request, 'You do not have permission to update orders.')
+    if not request.user.is_staff or request.user.is_superuser:
+        messages.error(request, 'You do not have permission to update orders. Only staff can do this.')
         return redirect('order_list')
         
     order = get_object_or_404(Order, id=pk)
