@@ -41,39 +41,78 @@ def user_logout(request):
     return redirect('login')
 
 
-# REGISTER
+# REGISTER (CUSTOMER ONLY)
 def register(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        role = request.POST['role']
+
+        # Robust Password validation
+        import re
+        if len(password) < 8:
+            messages.error(request, "Password must be at least 8 characters long")
+            return redirect('register')
+        if not re.search(r"\d", password):
+            messages.error(request, "Password must contain at least one digit")
+            return redirect('register')
+        if not re.search(r"[A-Z]", password):
+            messages.error(request, "Password must contain at least one uppercase letter")
+            return redirect('register')
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect('register')
 
-        if role == 'admin':
-            user = User.objects.create_user(username=username, password=password)
-            user.is_superuser = True
-            user.is_staff = True
-            user.save()
+        # Create as Customer
+        User.objects.create_user(username=username, password=password)
 
-        elif role == 'staff':
-            User.objects.create_user(username=username, password=password, is_staff=True)
-
-        else:
-            User.objects.create_user(username=username, password=password)
-
-        messages.success(request, "Registration successful! Please login.")
+        messages.success(request, f"Registration for {username} successful! Please login.")
         return redirect('login')
 
     return render(request, 'register.html')
 
 
+# REGISTER STAFF (ADMIN ONLY)
+@login_required
+def register_staff(request):
+    if not request.user.is_superuser:
+        messages.error(request, "Access denied. Only administrators can register staff.")
+        return redirect('admin_page')
+
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        # Robust Password validation
+        import re
+        if len(password) < 8:
+            messages.error(request, "Password must be at least 8 characters long")
+            return redirect('register_staff')
+        if not re.search(r"\d", password):
+            messages.error(request, "Password must contain at least one digit")
+            return redirect('register_staff')
+        if not re.search(r"[A-Z]", password):
+            messages.error(request, "Password must contain at least one uppercase letter")
+            return redirect('register_staff')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect('register_staff')
+
+        # Create as Staff
+        User.objects.create_user(username=username, password=password, is_staff=True)
+
+        messages.success(request, f"Staff member {username} registered successfully!")
+        return redirect('admin_page')
+
+    return render(request, 'register_staff.html')
+
+
 # PAGES
 @login_required
 def admin_page(request):
-    return render(request, 'admin_page.html')
+    staff_members = User.objects.filter(is_staff=True, is_superuser=False)
+    return render(request, 'admin_page.html', {'staff_members': staff_members})
 
 
 @login_required

@@ -21,6 +21,8 @@
             --text-muted: #94a3b8;
             --danger: #ef4444;
             --success: #10b981;
+            --veg: #10b981;
+            --non-veg: #ef4444;
         }
 
         * {
@@ -212,6 +214,43 @@
             color: #fff;
         }
 
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .type-badge.veg {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--veg);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .type-badge.non-veg {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--non-veg);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .type-badge ion-icon {
+            font-size: 0.8rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-main);
+        }
+        .section-title.veg-title { color: var(--veg); }
+        .section-title.nonveg-title { color: var(--non-veg); }
+
         /* Checkbox styling */
         .checkbox-wrapper {
             display: flex;
@@ -358,6 +397,9 @@
 
         <form action="{% url 'place_order' %}" method="POST">
             {% csrf_token %}
+            <h3 class="section-title veg-title">
+                <ion-icon name="leaf-outline"></ion-icon> Vegetarian Delights
+            </h3>
             <div class="table-container">
                 <table>
                     <thead>
@@ -365,10 +407,9 @@
                             {% if not request.user.is_superuser and not request.user.is_staff %}
                             <th width="5%">Select</th>
                             {% endif %}
-                            <th width="20%">Name</th>
-                            <th width="15%">Category</th>
-                            <th width="10%">Price</th>
-                            <th width="35%">Description</th>
+                            <th width="25%">Name</th>
+                            <th width="15%">Price</th>
+                            <th width="40%">Description</th>
                             {% if request.user.is_superuser %}
                             <th width="15%">Admin Actions</th>
                             {% endif %}
@@ -376,6 +417,7 @@
                     </thead>
                     <tbody>
                         {% for item in items %}
+                        {% if item.food_type == 'Veg' %}
                         {% if item.is_available or request.user.is_superuser %}
                         <tr>
                             {% if not request.user.is_superuser and not request.user.is_staff %}
@@ -387,28 +429,81 @@
                             {% endif %}
                             <td>
                                 <span class="item-name">{{ item.name }}</span>
-                                {% if not item.is_available %}
-                                <span style="color:var(--danger); font-size:0.8rem; margin-left:0.5rem;">(Unavailable)</span>
-                                {% endif %}
+                                <div style="margin-top: 4px;">
+                                    <span class="type-badge veg"><ion-icon name="leaf"></ion-icon> Veg</span>
+                                    {% if not item.is_available %}
+                                    <span style="color:var(--danger); font-size:0.8rem; margin-left:0.5rem;">(Unavailable)</span>
+                                    {% endif %}
+                                </div>
                             </td>
-                            <td>{{ item.category }}</td>
                             <td class="item-price">${{ item.price|floatformat:2 }}</td>
                             <td style="color: var(--text-muted);">{{ item.description }}</td>
                             
                             {% if request.user.is_superuser %}
                             <td class="action-links">
                                 <a href="/update/{{ item.id }}">Edit</a>
-                                {% if request.user.is_superuser %}
                                 <a href="/delete/{{ item.id }}" class="delete-link">Delete</a>
-                                {% endif %}
                             </td>
                             {% endif %}
                         </tr>
                         {% endif %}
-                        {% empty %}
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="section-title nonveg-title">
+                <ion-icon name="flame-outline"></ion-icon> Non-Vegetarian Specials
+            </h3>
+            <div class="table-container">
+                <table>
+                    <thead>
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 2rem;">No items found on the menu.</td>
+                            {% if not request.user.is_superuser and not request.user.is_staff %}
+                            <th width="5%">Select</th>
+                            {% endif %}
+                            <th width="25%">Name</th>
+                            <th width="15%">Price</th>
+                            <th width="40%">Description</th>
+                            {% if request.user.is_superuser %}
+                            <th width="15%">Admin Actions</th>
+                            {% endif %}
                         </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        {% if item.food_type == 'Non-Veg' %}
+                        {% if item.is_available or request.user.is_superuser %}
+                        <tr>
+                            {% if not request.user.is_superuser and not request.user.is_staff %}
+                            <td>
+                                <div class="checkbox-wrapper">
+                                    <input type="checkbox" name="items" value="{{ item.id }}" {% if not item.is_available %}disabled{% endif %}>
+                                </div>
+                            </td>
+                            {% endif %}
+                            <td>
+                                <span class="item-name">{{ item.name }}</span>
+                                <div style="margin-top: 4px;">
+                                    <span class="type-badge non-veg"><ion-icon name="flame"></ion-icon> Non-Veg</span>
+                                    {% if not item.is_available %}
+                                    <span style="color:var(--danger); font-size:0.8rem; margin-left:0.5rem;">(Unavailable)</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="item-price">${{ item.price|floatformat:2 }}</td>
+                            <td style="color: var(--text-muted);">{{ item.description }}</td>
+                            
+                            {% if request.user.is_superuser %}
+                            <td class="action-links">
+                                <a href="/update/{{ item.id }}">Edit</a>
+                                <a href="/delete/{{ item.id }}" class="delete-link">Delete</a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endif %}
+                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>

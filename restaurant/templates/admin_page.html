@@ -216,6 +216,97 @@
             animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
+        .staff-section {
+            margin-top: 4rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+            display: none; /* Hidden by default */
+        }
+
+        .staff-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-main);
+        }
+
+        .section-title ion-icon {
+            color: var(--primary-accent);
+        }
+
+        .staff-table-container {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .staff-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .staff-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.2rem 1.5rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--surface-border);
+        }
+
+        .staff-table td {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--surface-border);
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        .staff-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .staff-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: currentColor;
+            border-radius: 50%;
+        }
+
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
@@ -274,9 +365,77 @@
                 <p>Track all out-of-stock items and manage what is hidden from your customers.</p>
             </a>
 
+            <a href="{% url 'register_staff' %}" class="action-card" style="border-color: rgba(59, 130, 246, 0.4);">
+                <ion-icon name="person-add-outline" style="color: #3b82f6;"></ion-icon>
+                <h3>Register Staff</h3>
+                <p>Securely add new staff members to the system. They will be granted staff permissions automatically.</p>
+            </a>
 
+            <div id="viewStaffBtn" class="action-card" style="border-color: rgba(167, 139, 250, 0.4); cursor: pointer;">
+                <ion-icon name="people-outline" style="color: #a78bfa;"></ion-icon>
+                <h3>View Staff List</h3>
+                <p>Click to toggle the visibility of all currently registered staff members below.</p>
+            </div>
+        </div>
+
+        <div class="staff-section">
+            <h2 class="section-title">
+                <ion-icon name="people-outline"></ion-icon>
+                Registered Staff Members
+            </h2>
+            
+            <div class="staff-table-container">
+                <table class="staff-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Joined Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for staff in staff_members %}
+                        <tr>
+                            <td>{{ staff.username }}</td>
+                            <td>{{ staff.email|default:"No email provided" }}</td>
+                            <td>
+                                <span class="status-badge">Active</span>
+                            </td>
+                            <td>{{ staff.date_joined|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">
+                                <div class="empty-state">
+                                    <ion-icon name="people-outline" style="font-size: 2rem; margin-bottom: 0.5rem;"></ion-icon>
+                                    <p>No staff members registered yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
+    <script>
+        const viewStaffBtn = document.getElementById('viewStaffBtn');
+        const staffSection = document.querySelector('.staff-section');
+
+        viewStaffBtn.addEventListener('click', () => {
+            staffSection.classList.toggle('active');
+            
+            if (staffSection.classList.contains('active')) {
+                staffSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                viewStaffBtn.querySelector('h3').textContent = 'Hide Staff List';
+                viewStaffBtn.querySelector('ion-icon').setAttribute('name', 'eye-off-outline');
+            } else {
+                viewStaffBtn.querySelector('h3').textContent = 'View Staff List';
+                viewStaffBtn.querySelector('ion-icon').setAttribute('name', 'people-outline');
+            }
+        });
+    </script>
 </body>
 </html>

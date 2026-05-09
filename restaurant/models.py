@@ -2,8 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Menu(models.Model):
+    FOOD_TYPES = [
+        ('Veg', 'Veg'),
+        ('Non-Veg', 'Non-Veg'),
+    ]
     name = models.CharField(max_length=100)
-    category = models.CharField(max_length=50)
+    category = models.CharField(max_length=50, blank=True, null=True)
+    food_type = models.CharField(max_length=10, choices=FOOD_TYPES, default='Veg')
     price = models.FloatField()
     description = models.TextField()
     is_available = models.BooleanField(default=True)
