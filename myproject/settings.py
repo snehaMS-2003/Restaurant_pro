@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-1234567890'
 
 # IMPORTANT FIX
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['restaurant-pro-z2uh.onrender.com']
 
 # Installed apps
 INSTALLED_APPS = [
