@@ -1,6 +1,10 @@
 import os
 from pathlib import Path
 
+
+from dotenv import load_dotenv
+
+load_dotenv()
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -59,8 +63,17 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'defaultdb',
+        'USER': 'avnadmin',
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': 'mysql-3197483e-snehams033-73ba.d.aivencloud.com',
+        'PORT': '10789',
+        'OPTIONS': {
+            'ssl': {
+                'ssl-mode': 'REQUIRED',
+            }
+        }
     }
 }
 
