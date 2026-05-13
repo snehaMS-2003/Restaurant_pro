@@ -9,11 +9,13 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
-SECRET_KEY = 'django-insecure-1234567890'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key')
 
-# IMPORTANT FIX
-DEBUG = True
-ALLOWED_HOSTS = ['restaurant-pro-z2uh.onrender.com']
+# DEBUG mode
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+# Allowed Hosts
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 # Installed apps
 INSTALLED_APPS = [
@@ -61,21 +63,31 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'defaultdb',
-        'USER': 'avnadmin',
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': 'mysql-3197483e-snehams033-73ba.d.aivencloud.com',
-        'PORT': '10789',
-        'OPTIONS': {
-            'ssl': {
-                'ssl-mode': 'REQUIRED',
+DB_ENGINE = os.environ.get('DB_ENGINE', 'mysql')
+
+if DB_ENGINE == 'sqlite3':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME', 'defaultdb'),
+            'USER': os.environ.get('DB_USER', 'avnadmin'),
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '3306'),
+            'OPTIONS': {
+                'ssl': {
+                    'ssl-mode': os.environ.get('DB_SSL_MODE', 'REQUIRED'),
+                }
             }
         }
     }
-}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
